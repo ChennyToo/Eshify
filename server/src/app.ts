@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Express } from 'express';
 import cors from 'cors';
 import gameRoutes from './api/routes/gameRoutes.js';
 
-const app = express();
+const app: Express = express();
 
 // Middleware
 app.use(cors());

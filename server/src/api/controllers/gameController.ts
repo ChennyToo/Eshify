@@ -1,11 +1,18 @@
+import { Request, Response } from 'express';
 import gameService from '../../services/gameService.js';
+import { GameRound } from '../../services/gameService.js';
+
+interface CreateGameRequestBody {
+  selectedArtists: string[];
+  numberOfRounds: number;
+}
 
 /**
  * Handles the creation of a new game session.
- * @param {import('express').Request} req - The Express request object.
- * @param {import('express').Response} res - The Express response object.
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
  */
-async function createGame(req, res) {
+async function createGame(req: Request<{}, {}, CreateGameRequestBody>, res: Response<GameRound[] | { message: string }>) {
   try {
     const { selectedArtists, numberOfRounds } = req.body;
 

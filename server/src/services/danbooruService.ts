@@ -1,12 +1,23 @@
 import axios from 'axios';
 import config from '../config/environment.js';
 
+// A basic type for the Danbooru Post object.
+// Add more fields here as needed.
+export interface Post {
+  id: number;
+  file_url: string;
+  large_file_url: string;
+  preview_file_url: string;
+  rating: string;
+  created_at: string;
+}
+
 /**
  * Creates the base parameters for any Danbooru API request, including authentication.
  * @returns {object} An object containing the base parameters for an API call.
  */
-function getApiBaseParams() {
-  const params = {};
+function getApiBaseParams(): { login?: string; api_key?: string } {
+  const params: { login?: string; api_key?: string } = {};
   if (config.danbooru.apiUser && config.danbooru.apiKey) {
     params.login = config.danbooru.apiUser;
     params.api_key = config.danbooru.apiKey;
@@ -17,12 +28,12 @@ function getApiBaseParams() {
 /**
  * Fetches a random post from Danbooru for a given artist tag.
  * @param {string} artistTag - The artist tag to search for.
- * @returns {Promise<object|null>} A promise that resolves to the post object or null if no post is found or an error occurs.
+ * @returns {Promise<Post|null>} A promise that resolves to the post object or null if no post is found or an error occurs.
  */
-async function getRandomPostByArtist(artistTag) {
+async function getRandomPostByArtist(artistTag: string): Promise<Post | null> {
   try {
     const url = `${config.danbooru.baseUrl}/posts.json`;
-    const response = await axios.get(url, {
+    const response = await axios.get<Post[]>(url, {
       params: {
         ...getApiBaseParams(),
         tags: `${artistTag} rating:safe`,
@@ -44,17 +55,16 @@ async function getRandomPostByArtist(artistTag) {
 /**
  * Fetches the most recent post from Danbooru for a given artist tag.
  * @param {string} artistTag - The artist tag to search for.
- * @returns {Promise<object|null>} A promise that resolves to the most recent post object or null if no post is found or an error occurs.
+ * @returns {Promise<Post|null>} A promise that resolves to the most recent post object or null if no post is found or an error occurs.
  */
-async function getMostRecentPostByArtist(artistTag) {
+async function getMostRecentPostByArtist(artistTag: string): Promise<Post | null> {
   try {
     const url = `${config.danbooru.baseUrl}/posts.json`;
-    const response = await axios.get(url, {
+    const response = await axios.get<Post[]>(url, {
       params: {
         ...getApiBaseParams(),
-        tags: `${artistTag}`,
+        tags: `${artistTag} rating:safe`,
         limit: 1,
-        // The API docs don't specify order, but ordering by descending ID is a standard REST convention for "most recent".
         'search[order]': 'id_desc',
       },
     });

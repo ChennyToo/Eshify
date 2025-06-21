@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const config = {
-  port: process.env.PORT || 3001,
+  port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3001,
   danbooru: {
     baseUrl: process.env.DANBOORU_API_BASE_URL || 'https://danbooru.donmai.us',
     apiKey: process.env.DANBOORU_API_KEY,

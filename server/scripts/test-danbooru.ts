@@ -1,11 +1,13 @@
 import danbooruService from '../src/services/danbooruService.js';
 
+type ServiceFunction = (artistTag: string) => Promise<any>;
+
 /**
  * Derives a human-readable test name from a service function's name.
  * @param {string} functionName The name of the function (e.g., 'getMostRecentPostByArtist').
  * @returns {string} A user-friendly name for the test.
  */
-function getTestName(functionName) {
+function getTestName(functionName: string): string {
   switch (functionName) {
     case 'getMostRecentPostByArtist':
       return 'Most Recent';
@@ -19,10 +21,10 @@ function getTestName(functionName) {
 
 /**
  * A generic test runner for Danbooru service functions.
- * @param {function} serviceFunction - The service function to call (e.g., danbooruService.getMostRecentPostByArtist).
+ * @param {ServiceFunction} serviceFunction - The service function to call (e.g., danbooruService.getMostRecentPostByArtist).
  * @param {string} artistTag - The artist tag to test with.
  */
-async function runTest(serviceFunction, artistTag) {
+async function runTest(serviceFunction: ServiceFunction, artistTag: string): Promise<void> {
   const testName = getTestName(serviceFunction.name);
   console.log(`--- Fetching ${testName.toUpperCase()} post for artist: "${artistTag}" ---`);
   try {
@@ -49,16 +51,12 @@ async function runTest(serviceFunction, artistTag) {
 /**
  * Main function to run the test script.
  * You can change the artist names in this function to test different artists.
- * List of functions:
- * danbooruService.getMostRecentPostByArtist
- * danbooruService.getRandomPostByArtist
  */
-
-async function main() {
+async function main(): Promise<void> {
   const artistName = 'toosaka_asagi';
-  // await runTest(danbooruService.getMostRecentPostByArtist, artistName);
+//   await runTest(danbooruService.getMostRecentPostByArtist, artistName);
 
-  // console.log(''); // Add a blank line for readability
+//   console.log(''); // Add a blank line for readability
 
   await runTest(danbooruService.getRandomPostByArtist, artistName);
 }
