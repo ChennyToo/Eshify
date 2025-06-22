@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { gameService } from '../services/gameService';
 import GameSetupForm from '../components/HomePage/GameSetupForm';
 import PageLayout from '../components/layout/PageLayout';
+import defaultArtists from '../assets/artistList2(easy).json';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [artists, setArtists] = useState('toosaka_asagi, kantoku, fuumi_(radial_engine), azuuru');
+  const [artists, setArtists] = useState(defaultArtists.join(', '));
   const [rounds, setRounds] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +17,7 @@ const HomePage = () => {
     setIsLoading(true);
     setError(null);
 
-    const artistList = artists.split(',').map(artist => artist.trim()).filter(artist => artist);
+    const artistList = artists.split(/[\s,]+/).map(artist => artist.trim()).filter(artist => artist);
 
     if (artistList.length === 0) {
       setError('Please enter at least one artist tag.');

@@ -23,14 +23,14 @@ const GameSetupForm: React.FC<GameSetupFormProps> = ({
   return (
     <form onSubmit={onStartGame} className={styles.form}>
       <div className={styles.inputGroup}>
-        <label htmlFor="artists">Artist Tags (comma-separated):</label>
-        <input
+        <label htmlFor="artists">Artist Tags (separated by commas, spaces, or new lines):</label>
+        <textarea
           id="artists"
-          type="text"
           value={artists}
           onChange={(e) => onArtistsChange(e.target.value)}
           placeholder="e.g., takeuchi_takashi, k-eke"
-          className={styles.input}
+          className={styles.textarea}
+          rows={5}
         />
       </div>
       <div className={styles.inputGroup}>

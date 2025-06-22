@@ -28,6 +28,15 @@
   font-size: 1rem;
 }
 
+.textarea {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical; /* Allow vertical resizing */
+}
+
 .button {
   padding: 10px 15px;
   border-radius: 4px;

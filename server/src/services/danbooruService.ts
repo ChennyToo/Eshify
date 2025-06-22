@@ -17,13 +17,22 @@ export interface Post {
  * Creates the base parameters for any Danbooru API request, including authentication.
  * @returns {object} An object containing the base parameters for an API call.
  */
-function getApiBaseParams(): { login?: string; api_key?: string } {
-  const params: { login?: string; api_key?: string } = {};
+function getApiBaseParams(): { [key: string]: string | undefined } {
+  const params: { [key: string]: string | undefined } = {
+    'search[created_at]': '>=2024-01-01',
+  };
+
   if (config.danbooru.apiUser && config.danbooru.apiKey) {
     params.login = config.danbooru.apiUser;
     params.api_key = config.danbooru.apiKey;
   }
   return params;
+}
+
+function buildTags(artistTag: string): string {
+  const baseTags = `${artistTag}`;
+  const hardcodedNegativeTags = config.danbooru.negativeTags;
+  return `${baseTags} ${hardcodedNegativeTags}`.trim();
 }
 
 /**
@@ -37,7 +46,7 @@ async function getRandomPostByArtist(artistTag: string): Promise<Post | null> {
     const response = await axios.get<Post[]>(url, {
       params: {
         ...getApiBaseParams(),
-        tags: `${artistTag} rating:safe`,
+        tags: buildTags(artistTag),
         limit: 1,
         random: true,
       },
@@ -64,7 +73,7 @@ async function getMostRecentPostByArtist(artistTag: string): Promise<Post | null
     const response = await axios.get<Post[]>(url, {
       params: {
         ...getApiBaseParams(),
-        tags: `${artistTag} rating:safe`,
+        tags: buildTags(artistTag),
         limit: 1,
         'search[order]': 'id_desc',
       },
@@ -98,13 +107,14 @@ async function getNthMostRecentPostByArtist(artistTag: string, n: number = 1): P
     const response = await axios.get<Post[]>(url, {
       params: {
         ...getApiBaseParams(),
-        tags: `${artistTag} rating:safe`,
+        tags: buildTags(artistTag),
         limit: 1,
         page: n, // The 'page' parameter gets us the nth result when limit is 1
       },
     });
 
     if (response.data && response.data.length > 0) {
+        console.log("Response Data:", response.data);
       return response.data[0];
     }
     return null;
