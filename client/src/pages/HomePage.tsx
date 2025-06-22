@@ -38,7 +38,7 @@ const HomePage = () => {
       });
       console.log('------------------------------------');
 
-      navigate('/game', { state: { gameRounds: gameData, rounds } });
+      navigate('/game', { state: { gameRounds: gameData, artists: artistList, rounds } });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

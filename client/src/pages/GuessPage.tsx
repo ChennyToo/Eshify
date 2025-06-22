@@ -2,17 +2,53 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GameRound } from '../types/game';
 import PageLayout from '../components/layout/PageLayout';
+import './GuessPage.css';
 
 const GuessPage: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { gameRounds, rounds } = location.state as { gameRounds: GameRound[], rounds: number };
+    const { gameRounds, artists, rounds } = location.state as { gameRounds: GameRound[], artists: string[], rounds: number };
 
     const [currentRound, setCurrentRound] = useState(0);
     const [score, setScore] = useState(0);
     const [guess, setGuess] = useState('');
     const [gameOver, setGameOver] = useState(false);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+
+    const handleGuessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const oldValue = guess;
+        const newValue = e.target.value;
+
+        // If the current guess is already a full artist name,
+        // only allow changes that shorten the input (like backspace).
+        if (artists.includes(oldValue) && newValue.length > oldValue.length) {
+            return; // Prevent adding more characters
+        }
+
+        setGuess(newValue);
+
+        if (newValue.length >= 2) {
+            const filteredSuggestions = artists.filter(artist =>
+                artist.toLowerCase().includes(newValue.toLowerCase())
+            );
+
+            // Only autofill if we are narrowing down to one result and typing forward
+            if (filteredSuggestions.length === 1 && newValue.length > oldValue.length) {
+                setGuess(filteredSuggestions[0]);
+                setSuggestions([]);
+            } else {
+                setSuggestions(filteredSuggestions);
+            }
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setGuess(suggestion);
+        setSuggestions([]);
+    };
 
     const handleGuessSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,6 +85,7 @@ const GuessPage: React.FC = () => {
             setGameOver(true);
         }
         console.log('----------------------');
+        setSuggestions([]);
     };
 
     if (gameOver) {
@@ -75,16 +112,28 @@ const GuessPage: React.FC = () => {
                 <h1>Guess the Artist</h1>
                 <p>Round: {currentRound + 1} / {rounds}</p>
                 <p>Score: {score}</p>
-                <img src={currentRoundData.post.imageUrl} alt="Guess the artist" style={{ maxWidth: '500px' }} />
-                <form onSubmit={handleGuessSubmit}>
-                    <input
-                        type="text"
-                        value={guess}
-                        onChange={(e) => setGuess(e.target.value)}
-                        placeholder="Enter artist name"
-                    />
+                <form onSubmit={handleGuessSubmit} className="guess-form">
+                    <div className="autocomplete-container">
+                        <input
+                            type="text"
+                            value={guess}
+                            onChange={handleGuessChange}
+                            placeholder="Enter artist name"
+                            autoComplete="off"
+                        />
+                        {suggestions.length > 0 && (
+                            <ul className="suggestions-list">
+                                {suggestions.map((suggestion, index) => (
+                                    <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                                        {suggestion}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                     <button type="submit">Guess</button>
                 </form>
+                <img src={currentRoundData.post.imageUrl} alt="Guess the artist" style={{ maxWidth: '500px' }} />
             </div>
         </PageLayout>
     );
