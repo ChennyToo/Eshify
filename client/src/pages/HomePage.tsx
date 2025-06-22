@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gameService } from '../services/gameService';
+import GameSetupForm from '../components/HomePage/GameSetupForm';
+import PageLayout from '../components/layout/PageLayout';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [artists, setArtists] = useState('takeuchi_takashi, k-eke');
   const [rounds, setRounds] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +25,11 @@ const HomePage = () => {
     }
 
     try {
-      const gameData = await gameService.startGame({
+      await gameService.startGame({
         selectedArtists: artistList,
         numberOfRounds: rounds,
       });
-      console.log('--- Game Data Received ---');
-      console.log(gameData);
-      // We will navigate to the game screen with this data later
+      navigate('/game', { state: { artists: artistList, rounds } });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -41,38 +43,17 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <h1>Create a New Game</h1>
-      <form onSubmit={handleStartGame}>
-        <div>
-          <label htmlFor="artists">Artist Tags (comma-separated):</label>
-          <input
-            id="artists"
-            type="text"
-            value={artists}
-            onChange={(e) => setArtists(e.target.value)}
-            placeholder="e.g., takeuchi_takashi, k-eke"
-            style={{ width: '300px', marginLeft: '10px' }}
-          />
-        </div>
-        <div style={{ marginTop: '10px' }}>
-          <label htmlFor="rounds">Number of Rounds:</label>
-          <input
-            id="rounds"
-            type="number"
-            value={rounds}
-            onChange={(e) => setRounds(parseInt(e.target.value, 10))}
-            min="1"
-            max="20"
-            style={{ width: '50px', marginLeft: '10px' }}
-          />
-        </div>
-        <button type="submit" style={{ marginTop: '20px' }} disabled={isLoading}>
-          {isLoading ? 'Starting...' : 'Start Game'}
-        </button>
-      </form>
-      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-    </div>
+    <PageLayout>
+      <GameSetupForm
+        artists={artists}
+        rounds={rounds}
+        isLoading={isLoading}
+        error={error}
+        onArtistsChange={setArtists}
+        onRoundsChange={setRounds}
+        onStartGame={handleStartGame}
+      />
+    </PageLayout>
   );
 };
 

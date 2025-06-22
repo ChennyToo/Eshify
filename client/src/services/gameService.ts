@@ -23,6 +23,7 @@ interface StartGamePayload {
 const startGame = async (payload: StartGamePayload): Promise<GameRound[]> => {
   try {
     const response = await apiClient.post<GameRound[]>('/game', payload);
+    console.log('Response:', response.data);
     return response.data;
   } catch (error) {
     let errorMessage = 'An unexpected error occurred.';

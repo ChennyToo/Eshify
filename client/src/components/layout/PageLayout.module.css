@@ -1,0 +1,15 @@
+.pageContainer {
+  text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  color: white;
+}
+
+.header {
+  padding: 20px;
+  font-size: calc(10px + 2vmin);
+}
+
+.content {
+  padding: 20px;
+} 
