@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch src --ext ts --exec 'node --no-deprecation --import ./bootstrap.js' src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec \"node --no-deprecation --import ./bootstrap.js src/server.ts\"",
     "test-danbooru": "node --no-deprecation --import ./bootstrap.js scripts/test-danbooru.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

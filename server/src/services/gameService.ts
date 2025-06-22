@@ -1,13 +1,13 @@
-import danbooruService, { Post } from './danbooruService.js';
+import config from '../config/environment.js';
+import danbooruParserService, { CleanedPost } from './danbooruParserService.js';
 
 interface RoundDefinition {
   roundNumber: number;
-  choices: string[];
   correctAnswer: string;
 }
 
 export interface GameRound extends RoundDefinition {
-  post: Post;
+  post: CleanedPost;
 }
 
 /**
@@ -23,15 +23,16 @@ async function generateNewGame(selectedArtists: string[], numberOfRounds: number
     const correctAnswer = selectedArtists[Math.floor(Math.random() * selectedArtists.length)];
     roundDefinitions.push({
       roundNumber: i + 1,
-      choices: selectedArtists,
       correctAnswer,
     });
   }
 
-  // 2. Create an array of fetch promises
-  const fetchPromises = roundDefinitions.map(round =>
-    danbooruService.getRandomPostByArtist(round.correctAnswer)
-  );
+  // 2. Create an array of fetch-and-parse promises
+  const fetchPromises = roundDefinitions.map(round => {
+    const randomNumber = Math.floor(Math.random() * config.danbooru.nthPostLimit) + 1;
+    console.log(`Fetching post ${randomNumber} for artist ${round.correctAnswer}`);
+    return danbooruParserService.getNthCleanedPostByArtist(round.correctAnswer, randomNumber);
+  });
 
   // 3. Execute all promises concurrently
   const posts = await Promise.all(fetchPromises);
@@ -44,6 +45,8 @@ async function generateNewGame(selectedArtists: string[], numberOfRounds: number
     })
     .filter((round): round is GameRound => round !== null);
 
+  console.log(gameRounds);
+  
   return gameRounds;
 }
 

@@ -10,6 +10,7 @@ export interface Post {
   preview_file_url: string;
   rating: string;
   created_at: string;
+  tag_string_artist: string;
 }
 
 /**
@@ -79,7 +80,42 @@ async function getMostRecentPostByArtist(artistTag: string): Promise<Post | null
   }
 }
 
+/**
+ * Fetches the nth most recent post from Danbooru for a given artist tag.
+ * @param {string} artistTag - The artist tag to search for.
+ * @param {number} n - The 'nth' post to retrieve (e.g., 1 for the most recent, 2 for the second most recent).
+ * @returns {Promise<Post|null>} A promise that resolves to the nth most recent post object or null if not found.
+ */
+async function getNthMostRecentPostByArtist(artistTag: string, n: number = 1): Promise<Post | null> {
+  // Ensure n is a positive integer
+  if (n < 1) {
+    console.error('Error: n must be a positive integer.');
+    return null;
+  }
+
+  try {
+    const url = `${config.danbooru.baseUrl}/posts.json`;
+    const response = await axios.get<Post[]>(url, {
+      params: {
+        ...getApiBaseParams(),
+        tags: `${artistTag} rating:safe`,
+        limit: 1,
+        page: n, // The 'page' parameter gets us the nth result when limit is 1
+      },
+    });
+
+    if (response.data && response.data.length > 0) {
+      return response.data[0];
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error fetching ${n}th post for artist ${artistTag}:`, error);
+    return null;
+  }
+}
+
 export default {
   getRandomPostByArtist,
   getMostRecentPostByArtist,
+  getNthMostRecentPostByArtist,
 }; 
