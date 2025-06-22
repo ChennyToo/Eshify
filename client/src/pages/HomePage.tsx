@@ -6,7 +6,7 @@ import PageLayout from '../components/layout/PageLayout';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [artists, setArtists] = useState('takeuchi_takashi, k-eke');
+  const [artists, setArtists] = useState('toosaka_asagi, kantoku, fuumi_(radial_engine), azuuru');
   const [rounds, setRounds] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,11 +25,20 @@ const HomePage = () => {
     }
 
     try {
-      await gameService.startGame({
+      const gameData = await gameService.startGame({
         selectedArtists: artistList,
         numberOfRounds: rounds,
       });
-      navigate('/game', { state: { artists: artistList, rounds } });
+
+      console.log('--- Game Data Fetched on Home Page ---');
+      gameData.forEach(round => {
+        console.log(`Round ${round.roundNumber}:`);
+        console.log(`  Artist: ${round.correctAnswer}`);
+        console.log(`  Image URL: ${round.post.imageUrl}`);
+      });
+      console.log('------------------------------------');
+
+      navigate('/game', { state: { gameRounds: gameData, rounds } });
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

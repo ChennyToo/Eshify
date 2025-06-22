@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Backend for EshiGuessr",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "dev": "nodemon --watch src --ext ts --exec \"node --no-deprecation --import ./bootstrap.js src/server.ts\"",
     "test-danbooru": "node --no-deprecation --import ./bootstrap.js scripts/test-danbooru.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
