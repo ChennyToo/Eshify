@@ -20,7 +20,17 @@ const IncorrectAnswersGrid: React.FC<IncorrectAnswersGridProps> = ({ incorrectGu
                         <img src={item.post.imageUrl} alt="Incorrectly guessed art" className={styles.incorrectImage} />
                         <div className={styles.incorrectDetails}>
                             <p>Your guess: <span>{item.userGuess}</span></p>
-                            <p>Correct answer: <span>{item.correctAnswer}</span></p>
+                            <p>
+                                Correct answer:{' '}
+                                <a
+                                    href={`https://danbooru.donmai.us/posts?tags=${encodeURIComponent(item.correctAnswer)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.link}
+                                >
+                                    {item.correctAnswer}
+                                </a>
+                            </p>
                         </div>
                     </div>
                 ))}

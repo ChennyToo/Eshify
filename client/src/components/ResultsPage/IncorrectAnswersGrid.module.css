@@ -41,4 +41,14 @@
 .incorrectDetails span {
     font-weight: bold;
     color: #ffc107;
+}
+
+.link {
+    font-weight: bold;
+    color: #61dafb;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
 } 

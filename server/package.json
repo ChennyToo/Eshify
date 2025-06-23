@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Backend for EshiGuessr",
+  "description": "Backend for Eshify",
   "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
