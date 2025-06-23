@@ -1,0 +1,44 @@
+.incorrectAnswersContainer {
+    margin: 40px auto 0;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.incorrectAnswersContainer h2 {
+    margin-bottom: 20px;
+}
+
+.incorrectGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.incorrectItem {
+    background-color: #3a3f4a;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.incorrectImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.incorrectDetails {
+    padding: 15px;
+    color: #fff;
+}
+
+.incorrectDetails p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.incorrectDetails span {
+    font-weight: bold;
+    color: #ffc107;
+} 

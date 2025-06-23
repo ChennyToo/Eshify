@@ -16,4 +16,10 @@ export interface GameRound {
   choices: string[];
   correctAnswer: string;
   post: CleanedPost;
+}
+
+export interface IncorrectGuess {
+  userGuess: string;
+  correctAnswer: string;
+  post: CleanedPost;
 } 

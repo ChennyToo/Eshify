@@ -1,0 +1,32 @@
+import React from 'react';
+import { IncorrectGuess } from '../../types/game';
+import styles from './IncorrectAnswersGrid.module.css';
+
+interface IncorrectAnswersGridProps {
+    incorrectGuesses: IncorrectGuess[];
+}
+
+const IncorrectAnswersGrid: React.FC<IncorrectAnswersGridProps> = ({ incorrectGuesses }) => {
+    if (!incorrectGuesses || incorrectGuesses.length === 0) {
+        return null;
+    }
+
+    return (
+        <div className={styles.incorrectAnswersContainer}>
+            <h2>Review Your Answers</h2>
+            <div className={styles.incorrectGrid}>
+                {incorrectGuesses.map((item, index) => (
+                    <div key={index} className={styles.incorrectItem}>
+                        <img src={item.post.imageUrl} alt="Incorrectly guessed art" className={styles.incorrectImage} />
+                        <div className={styles.incorrectDetails}>
+                            <p>Your guess: <span>{item.userGuess}</span></p>
+                            <p>Correct answer: <span>{item.correctAnswer}</span></p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default IncorrectAnswersGrid; 

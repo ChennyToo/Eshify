@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GameRound } from '../types/game';
+import { GameRound, IncorrectGuess } from '../types/game';
 import PageLayout from '../components/layout/PageLayout';
 import './GuessPage.css';
 
@@ -13,8 +13,8 @@ const GuessPage: React.FC = () => {
     const [currentRound, setCurrentRound] = useState(0);
     const [score, setScore] = useState(0);
     const [guess, setGuess] = useState('');
-    const [gameOver, setGameOver] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [incorrectGuesses, setIncorrectGuesses] = useState<IncorrectGuess[]>([]);
 
     const handleGuessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const oldValue = guess;
@@ -62,6 +62,17 @@ const GuessPage: React.FC = () => {
         const userGuess = guess.trim().toLowerCase();
         const correctAnswer = gameRounds[currentRound].correctAnswer.toLowerCase();
         const isCorrect = userGuess === correctAnswer;
+        let updatedIncorrectGuesses = incorrectGuesses;
+
+        if (!isCorrect) {
+            const newIncorrectGuess = {
+                userGuess: guess.trim(),
+                correctAnswer: gameRounds[currentRound].correctAnswer,
+                post: gameRounds[currentRound].post,
+            };
+            updatedIncorrectGuesses = [...incorrectGuesses, newIncorrectGuess];
+            setIncorrectGuesses(updatedIncorrectGuesses);
+        }
 
         console.log(`Round: ${currentRound + 1}/${rounds}`);
         console.log(`User's Guess: "${userGuess}"`);
@@ -69,36 +80,25 @@ const GuessPage: React.FC = () => {
         console.log(`Was guess correct? ${isCorrect}`);
         console.log(`Score (Before): ${score}`);
 
-        if (isCorrect) {
-            setScore(score + 1);
-            console.log(`Score (After): ${score + 1}`);
-        } else {
-            console.log(`Score (After): ${score}`);
-        }
-
         if (currentRound < rounds - 1) {
+            if (isCorrect) {
+                setScore(score + 1);
+                console.log(`Score (After): ${score + 1}`);
+            } else {
+                console.log(`Score (After): ${score}`);
+            }
             console.log('Advancing to the next round.');
             setCurrentRound(currentRound + 1);
             setGuess('');
         } else {
+            const finalScore = isCorrect ? score + 1 : score;
+            console.log(`Score (After): ${finalScore}`);
             console.log('Game over.');
-            setGameOver(true);
+            navigate('/results', { state: { score: finalScore, rounds, incorrectGuesses: updatedIncorrectGuesses } });
         }
         console.log('----------------------');
         setSuggestions([]);
     };
-
-    if (gameOver) {
-        return (
-            <PageLayout>
-                <div>
-                    <h1>Game Over</h1>
-                    <p>Your final score is: {score} / {rounds}</p>
-                    <button onClick={() => navigate('/')}>Play Again</button>
-                </div>
-            </PageLayout>
-        );
-    }
 
     if (!gameRounds || gameRounds.length === 0) {
         return <PageLayout><div>Game could not be started or no rounds were generated.</div></PageLayout>;
