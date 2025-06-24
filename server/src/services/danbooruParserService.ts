@@ -11,15 +11,16 @@ export interface CleanedPost {
 }
 
 /**
- * Parses a raw Post object from the Danbooru API into a CleanedPost object.
+ * Parses a raw Post object from the Gelbooru API into a CleanedPost object.
  * @param {Post} rawPost The raw post object from the service.
+ * @param {string} artistTag The known correct artist tag for this post.
  * @returns {CleanedPost} A clean post object with only the necessary fields.
  */
-function parsePost(rawPost: Post): CleanedPost {
+function parsePost(rawPost: Post, artistTag: string): CleanedPost {
   return {
     id: rawPost.id,
-    imageUrl: rawPost.large_file_url || rawPost.file_url,
-    artistTag: rawPost.tag_string_artist,
+    imageUrl: rawPost.file_url,
+    artistTag: artistTag,
   };
 }
 
@@ -33,7 +34,7 @@ async function getRandomCleanedPostByArtist(artistTag: string): Promise<CleanedP
   if (!rawPost) {
     return null;
   }
-  return parsePost(rawPost);
+  return parsePost(rawPost, artistTag);
 }
 
 /**
@@ -47,7 +48,7 @@ async function getNthCleanedPostByArtist(artistTag: string, n: number): Promise<
   if (!rawPost) {
     return null;
   }
-  return parsePost(rawPost);
+  return parsePost(rawPost, artistTag);
 }
 
 export default {
