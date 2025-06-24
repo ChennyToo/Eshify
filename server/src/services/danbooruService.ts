@@ -33,17 +33,13 @@ async function getNthPostByArtist(artistTag: string, n: number = 1): Promise<Pos
     return null;
   }
   
-  // Use 'n' to seed a pseudorandom page within the configured limit.
-  // This simulates fetching a random post since Gelbooru lacks a direct 'random' feature.
-  const pageId = Math.floor(Math.random() * config.danbooru.nthPostLimit);
-
   try {
     const url = `${config.danbooru.baseUrl}?page=dapi&s=post&q=index&json=1`;
     
     const params: any = {
       tags: buildTags(artistTag),
       limit: 1,
-      pid: pageId,
+      pid: n, // pid is misleading, this is NOT page number, it is the post number, pid of 1 is the most recent post, then 2 is the second most recent, etc.
     };
 
     if (config.danbooru.apiKey && config.danbooru.userId) {
@@ -52,7 +48,6 @@ async function getNthPostByArtist(artistTag: string, n: number = 1): Promise<Pos
     }
 
     const response = await axios.get<{ post: Post[] } | ''>(url, { params });
-    console.log(response.data);
 
     // Gelbooru can return an empty string or an object with an empty post array
     if (response.data && 'post' in response.data && response.data.post && response.data.post.length > 0) {
