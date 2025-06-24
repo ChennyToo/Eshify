@@ -109,7 +109,7 @@ async function getNthMostRecentPostByArtist(artistTag: string, n: number = 1): P
         ...getApiBaseParams(),
         tags: buildTags(artistTag),
         limit: 1,
-        page: n, // The 'page' parameter gets us the nth result when limit is 1
+        page: n, // The 'page' parameter gets us the nth image from the artist's post history by most recent
       },
     });
 

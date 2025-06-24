@@ -17,7 +17,9 @@ const IncorrectAnswersGrid: React.FC<IncorrectAnswersGridProps> = ({ incorrectGu
             <div className={styles.incorrectGrid}>
                 {incorrectGuesses.map((item, index) => (
                     <div key={index} className={styles.incorrectItem}>
-                        <img src={item.post.imageUrl} alt="Incorrectly guessed art" className={styles.incorrectImage} />
+                        <a href={`https://danbooru.donmai.us/posts/${item.post.id}`} target="_blank" rel="noopener noreferrer">
+                            <img src={item.post.imageUrl} alt="Incorrectly guessed art" className={styles.incorrectImage} />
+                        </a>
                         <div className={styles.incorrectDetails}>
                             <p>Your guess: <span>{item.userGuess}</span></p>
                             <p>
